@@ -6,6 +6,16 @@ import HistoryTable from '@/components/history/HistoryTable';
 import AnalysisDashboard from '@/components/results/AnalysisDashboard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { ArrowLeft, RefreshCw } from 'lucide-react';
 import { LegalDocument } from '@/types/legal';
 import { useDocuments } from '@/contexts/DocumentContext';
@@ -19,35 +29,35 @@ const History = () => {
   const [riskLevel, setRiskLevel] = useState('all');
   const [selectedDocument, setSelectedDocument] = useState<LegalDocument | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState<{ id: string; name: string } | null>(null);
 
   const handleDelete = (id: string) => {
     const doc = documents.find(d => d.id === id);
     if (!doc) return;
 
-    // Show confirmation toast with action buttons
-    toast(`Delete ${doc.document_id}? This action cannot be undone.`, {
-      duration: 5000,
-      action: {
-        label: 'Delete',
-        onClick: async () => {
-          try {
-            await deleteDocument(id, doc.document_type);
-            toast.success(`Deleted ${doc.document_id || 'document'} successfully`);
+    // Open confirmation dialog
+    setDocumentToDelete({ id, name: doc.document_id });
+    setDeleteDialogOpen(true);
+  };
 
-            // If currently viewing the deleted document, go back to list
-            if (selectedDocument?.id === id) {
-              setSelectedDocument(null);
-            }
-          } catch (error) {
-            toast.error('Failed to delete document');
-          }
-        },
-      },
-      cancel: {
-        label: 'Cancel',
-        onClick: () => { },
-      },
-    });
+  const confirmDelete = async () => {
+    if (!documentToDelete) return;
+
+    try {
+      await deleteDocument(documentToDelete.id, documents.find(d => d.id === documentToDelete.id)?.document_type || 'contract');
+      toast.success(`Deleted ${documentToDelete.name} successfully`);
+
+      // If currently viewing the deleted document, go back to list
+      if (selectedDocument?.id === documentToDelete.id) {
+        setSelectedDocument(null);
+      }
+    } catch (error) {
+      toast.error('Failed to delete document');
+    } finally {
+      setDeleteDialogOpen(false);
+      setDocumentToDelete(null);
+    }
   };
 
   const handleRefresh = async () => {
@@ -184,6 +194,26 @@ const History = () => {
           </Card>
         </div>
       </main>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Document?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete <strong>{documentToDelete?.name}</strong>?
+              <br />
+              This action cannot be undone and will permanently remove the document from the database.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
