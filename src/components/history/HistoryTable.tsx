@@ -16,7 +16,7 @@ const getStatusBadge = (status: ProcessingStatus) => {
   switch (status) {
     case 'completed':
       return (
-        <Badge variant="outline" className="gap-1 border-primary/20 bg-primary/10 text-primary">
+        <Badge variant="outline" className="gap-1 border-blue-500/20 bg-blue-500 text-white">
           <CheckCircle2 className="h-3 w-3" />
           Completed
         </Badge>
@@ -72,7 +72,6 @@ const HistoryTable = ({ documents, onViewDocument, onDeleteDocument }: HistoryTa
             <TableHead>Client</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Risk</TableHead>
             <TableHead>Date</TableHead>
             <TableHead className="w-[120px]">Actions</TableHead>
           </TableRow>
@@ -96,7 +95,6 @@ const HistoryTable = ({ documents, onViewDocument, onDeleteDocument }: HistoryTa
                 {doc.document_type.replace('_', ' ')}
               </TableCell>
               <TableCell>{getStatusBadge(doc.status)}</TableCell>
-              <TableCell>{getRiskBadge(doc.results?.risk_score)}</TableCell>
               <TableCell className="text-muted-foreground">
                 {format(new Date(doc.created_at), 'MMM d, yyyy')}
               </TableCell>
