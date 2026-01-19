@@ -1,8 +1,8 @@
-# Contract & Case Law Resercher
+# Contract & Case Law Researcher
 
 > AI-Powered Legal Document Analysis & Research Platform
 
-Contract & Case Law Resercher is an intelligent legal automation platform that combines AI-powered document analysis with real-time legal research capabilities. Built for law firms and legal professionals, it streamlines contract review, risk assessment, and case law research through advanced natural language processing.
+Contract & Case Law Researcher is an intelligent legal automation platform that combines AI-powered document analysis with real-time legal research capabilities. Built for law firms and legal professionals, it streamlines contract review, risk assessment, and case law research through advanced natural language processing.
 
 ---
 
@@ -152,15 +152,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Google Gemini** - AI analysis capabilities
 - **shadcn/ui** - Beautiful UI components
 - **Vercel** - Deployment platform
-
----
-
-## 📧 Contact
-
-**Dhyan** - [@dhyan2815](https://github.com/dhyan2815)
-
-**Project Link**: [https://github.com/dhyan2815/Contract-Case-Law-Researcher](https://github.com/dhyan2815/Contract-Case-Law-Researcher)
-
----
-
-**Built with ❤️ for legal professionals**
