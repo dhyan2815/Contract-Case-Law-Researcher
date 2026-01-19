@@ -1,9 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { DocumentType } from '@/types/legal';
 
 interface RiskScoreCardProps {
   riskScore: number;
   confidenceScore: number;
+  documentType: DocumentType;
 }
 
 const getRiskColor = (score: number) => {
@@ -12,7 +14,14 @@ const getRiskColor = (score: number) => {
   return 'text-red-600';
 };
 
-const getRiskLabel = (score: number) => {
+const getRiskLabel = (score: number, documentType: DocumentType) => {
+  if (documentType === 'case_law') {
+    // For legal research, use applicability labels
+    if (score <= 3) return 'Low Applicability';
+    if (score <= 6) return 'Medium Applicability';
+    return 'High Applicability';
+  }
+  // For contracts, use risk labels
   if (score <= 3) return 'Low Risk';
   if (score <= 6) return 'Medium Risk';
   return 'High Risk';
@@ -24,16 +33,18 @@ const getRiskBgColor = (score: number) => {
   return 'bg-red-100';
 };
 
-const RiskScoreCard = ({ riskScore, confidenceScore }: RiskScoreCardProps) => {
+const RiskScoreCard = ({ riskScore, confidenceScore, documentType }: RiskScoreCardProps) => {
   // Debug logging
-  console.log('🎨 RiskScoreCard - riskScore:', riskScore, 'type:', typeof riskScore);
+  console.log('🎨 RiskScoreCard - riskScore:', riskScore, 'type:', typeof riskScore, 'documentType:', documentType);
   console.log('🎨 Progress bar width:', `${(riskScore / 10) * 100}%`);
+
+  const scoreTitle = documentType === 'case_law' ? 'Applicability Score' : 'Risk Score';
 
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Risk Score</CardTitle>
+          <CardTitle className="text-sm font-medium text-muted-foreground">{scoreTitle}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-baseline gap-2">
@@ -43,7 +54,7 @@ const RiskScoreCard = ({ riskScore, confidenceScore }: RiskScoreCardProps) => {
             <span className="text-lg text-muted-foreground">/ 10</span>
           </div>
           <div className={cn("mt-2 inline-flex rounded-full px-3 py-1 text-xs font-medium", getRiskBgColor(riskScore), getRiskColor(riskScore))}>
-            {getRiskLabel(riskScore)}
+            {getRiskLabel(riskScore, documentType)}
           </div>
           <div className="mt-4">
             <div className="flex justify-between text-xs text-muted-foreground mb-1">
